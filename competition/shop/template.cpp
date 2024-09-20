@@ -1,11 +1,3 @@
-#!/bin/bash
-cp -r template "$1"
-cd "$1"
-touch "$1"in.txt "$1"out.txt
-echo clang++ -o "$1" template.cpp >> conf.sh
-chmod +x conf.sh
-code "$1"in.txt "$1"out.txt template.cpp
-
 #include <cstdio>
 #include <cstdlib>
 #include <algorithm>
@@ -21,21 +13,40 @@ int d;
 int e;
 int o; // optimal
 int m; // max
-int answer = 1;
+int answer = 0;
 int answer1;
 int answer2;
+
+int costs[10000000];
 
 int main(void)
 {
     /* Open the input and output files. */
-    FILE *input_file = fopen("streetin.txt", "r");
-    FILE *output_file = fopen("streetout.txt", "w");
+    FILE *input_file = fopen("shopin.txt", "r");
+    FILE *output_file = fopen("shopout.txt", "w");
 
     /* Read the values of a and b from the input file. */
     fscanf(input_file, "%d %d", &a, &b);
+    for (int i = 0; i < a; ++i)
+    {
+        fscanf(input_file, "%d", &costs[i]);
+    }
+    sort(costs, costs + a);
 
-    answer = 0;
-
+    d = a - 1;
+    e = 0;
+    while (b > 0)
+    {
+        answer += costs[e];
+        --b;
+        --d;
+        ++e;
+    }
+    while (d > e)
+    {
+        answer += costs[d];
+        d -= 2;
+    }
     printf("%d", answer);
     /* Write the answer to the output file. */
     fprintf(output_file, "%d\n", answer);
